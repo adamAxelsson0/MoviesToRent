@@ -1,0 +1,88 @@
+﻿@page "/"
+@inject  HttpClient Http;
+<head>
+<style>
+.rating {
+  display: inline-block;
+  unicode-bidi: bidi-override;
+  color: #888888;
+  font-size: 25px;
+  height: 25px;
+  width: auto;
+  margin: 0;
+  position: relative;
+  padding: 0;
+}
+
+.ratingUpper {
+  color: #c52b2f;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+.rating-lower {
+  padding: 0;
+  display: flex;
+  z-index: 0;
+}
+</style>
+</head>
+
+<img src="https://i.imgur.com/iGZSVXe.png" alt="SFF">
+@if (_movies != null)
+{
+    @foreach (var movie in _movies)
+    {
+    <div class="card" style="width: 18rem;">
+    <img src= "https://i.pinimg.com/originals/0f/03/e6/0f03e6733b0cf567cc92e8e20290462f.jpg" class="card-img-top" alt="...">
+    <div class="card-body">
+    <h5 class="card-title">@movie.Title</h5>
+    <p class="card-text">@movie.Description</p>
+    
+    <div class="rating">
+    <div class="ratingUpper" style=@($"{movie.Rating}%")>
+        <span>★</span>
+        <span>★</span>
+        <span>★</span>
+        <span>★</span>
+        <span>★</span>
+    </div>
+    <div class="rating-lower">
+        <span>★</span>
+        <span>★</span>
+        <span>★</span>
+        <span>★</span>
+        <span>★</span>
+    </div>
+</div>
+<br><br>
+
+
+
+    <a href="#" class="btn btn-primary">Rent Movie</a>
+    </div>
+    </div>
+    }
+}
+else{
+    <p>Couldnt be loaded</p>
+}
+
+@code{
+    private Movie[] _movies;
+
+    protected override async Task OnInitializedAsync() =>
+        _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
+    public class Movie
+    {
+        public int ID { get; set; }
+        public string Title { get; set; }
+        public double Rating { get; set; }
+        public string ImageURL { get; set; }
+        public string Description { get; set; }
+    }
+}
