@@ -11,48 +11,48 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MoviesController : ControllerBase
+    public class FilmStudiosController : ControllerBase
     {
         private readonly MoviesForHireContext _context;
 
-        public MoviesController(MoviesForHireContext context)
+        public FilmStudiosController(MoviesForHireContext context)
         {
             _context = context;
         }
 
-        // GET: api/Movies
+        // GET: api/FilmStudio
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        public async Task<ActionResult<IEnumerable<FilmStudio>>> GetFilmStudios()
         {
-            return await _context.Movies.ToListAsync();
+            return await _context.FilmStudios.ToListAsync();
         }
 
-        // GET: api/Movies/5
+        // GET: api/FilmStudio/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        public async Task<ActionResult<FilmStudio>> GetFilmStudio(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var filmStudio = await _context.FilmStudios.FindAsync(id);
 
-            if (movie == null)
+            if (filmStudio == null)
             {
                 return NotFound();
             }
 
-            return movie;
+            return filmStudio;
         }
 
-        // PUT: api/Movies/5
+        // PUT: api/FilmStudio/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(int id, Movie movie)
+        public async Task<IActionResult> PutFilmStudio(int id, FilmStudio filmStudio)
         {
-            if (id != movie.Id)
+            if (id != filmStudio.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(movie).State = EntityState.Modified;
+            _context.Entry(filmStudio).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MovieExists(id))
+                if (!FilmStudioExists(id))
                 {
                     return NotFound();
                 }
@@ -73,37 +73,37 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Movies
+        // POST: api/FilmStudio
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        public async Task<ActionResult<FilmStudio>> PostFilmStudio(FilmStudio filmStudio)
         {
-                _context.Movies.Add(movie);
-                await _context.SaveChangesAsync();
+            _context.FilmStudios.Add(filmStudio);
+            await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
+            return CreatedAtAction("GetFilmStudio", new { id = filmStudio.Id }, filmStudio);
         }
 
-        // DELETE: api/Movies/5
+        // DELETE: api/FilmStudio/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Movie>> DeleteMovie(int id)
+        public async Task<ActionResult<FilmStudio>> DeleteFilmStudio(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
+            var filmStudio = await _context.FilmStudios.FindAsync(id);
+            if (filmStudio == null)
             {
                 return NotFound();
             }
 
-            _context.Movies.Remove(movie);
+            _context.FilmStudios.Remove(filmStudio);
             await _context.SaveChangesAsync();
 
-            return movie;
+            return filmStudio;
         }
 
-        private bool MovieExists(int id)
+        private bool FilmStudioExists(int id)
         {
-            return _context.Movies.Any(e => e.Id == id);
+            return _context.FilmStudios.Any(e => e.Id == id);
         }
     }
 }

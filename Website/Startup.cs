@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Website.Data;
 using System.Net.Http;
+using Blazored.Modal;
+using Blazored.Toast;
 
 namespace Website
 {
@@ -31,6 +33,8 @@ namespace Website
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<HttpClient>();
+            services.AddBlazoredModal();
+            services.AddBlazoredToast();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

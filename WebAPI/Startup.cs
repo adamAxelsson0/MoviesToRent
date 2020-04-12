@@ -37,8 +37,10 @@ namespace WebAPI
                 builder.AllowAnyOrigin().AllowAnyMethod();
             });
         });
-            services.AddDbContext<MovieContext>(opt =>
-               opt.UseInMemoryDatabase("TodoList"));
+            /*services.AddDbContext<MoviesForHireContext>(opt =>
+               opt.UseSqlite("Data Source = movieRentingDB.db;"));*/
+            
+            services.AddDbContext<MoviesForHireContext>();
             services.AddControllers();
         }
 

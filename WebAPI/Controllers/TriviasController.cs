@@ -11,48 +11,48 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MoviesController : ControllerBase
+    public class TriviasController : ControllerBase
     {
         private readonly MoviesForHireContext _context;
 
-        public MoviesController(MoviesForHireContext context)
+        public TriviasController(MoviesForHireContext context)
         {
             _context = context;
         }
 
-        // GET: api/Movies
+        // GET: api/Trivia
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        public async Task<ActionResult<IEnumerable<Trivia>>> GetTrivias()
         {
-            return await _context.Movies.ToListAsync();
+            return await _context.Trivias.ToListAsync();
         }
 
-        // GET: api/Movies/5
+        // GET: api/Trivia/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        public async Task<ActionResult<Trivia>> GetTrivia(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var trivia = await _context.Trivias.FindAsync(id);
 
-            if (movie == null)
+            if (trivia == null)
             {
                 return NotFound();
             }
 
-            return movie;
+            return trivia;
         }
 
-        // PUT: api/Movies/5
+        // PUT: api/Trivia/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(int id, Movie movie)
+        public async Task<IActionResult> PutTrivia(int id, Trivia trivia)
         {
-            if (id != movie.Id)
+            if (id != trivia.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(movie).State = EntityState.Modified;
+            _context.Entry(trivia).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MovieExists(id))
+                if (!TriviaExists(id))
                 {
                     return NotFound();
                 }
@@ -73,37 +73,37 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Movies
+        // POST: api/Trivia
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        public async Task<ActionResult<Trivia>> PostTrivia(Trivia trivia)
         {
-                _context.Movies.Add(movie);
-                await _context.SaveChangesAsync();
+            _context.Trivias.Add(trivia);
+            await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
+            return CreatedAtAction("GetTrivia", new { id = trivia.Id }, trivia);
         }
 
-        // DELETE: api/Movies/5
+        // DELETE: api/Trivia/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Movie>> DeleteMovie(int id)
+        public async Task<ActionResult<Trivia>> DeleteTrivia(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
+            var trivia = await _context.Trivias.FindAsync(id);
+            if (trivia == null)
             {
                 return NotFound();
             }
 
-            _context.Movies.Remove(movie);
+            _context.Trivias.Remove(trivia);
             await _context.SaveChangesAsync();
 
-            return movie;
+            return trivia;
         }
 
-        private bool MovieExists(int id)
+        private bool TriviaExists(int id)
         {
-            return _context.Movies.Any(e => e.Id == id);
+            return _context.Trivias.Any(e => e.Id == id);
         }
     }
 }

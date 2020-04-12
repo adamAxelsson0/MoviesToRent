@@ -1,7 +1,11 @@
 ﻿@page "/"
 @inject  HttpClient Http;
+@inject IModalService Modal
+@using System.Linq;
 <head>
+  <base href="~/" />
 <style>
+.card {display:inline-flex;}
 .rating {
   display: inline-block;
   unicode-bidi: bidi-override;
@@ -9,12 +13,13 @@
   font-size: 25px;
   height: 25px;
   width: auto;
-  margin: 0;
+  margin: 0 auto;
   position: relative;
   padding: 0;
+  text-align: right;
 }
 
-.ratingUpper {
+.rating-upper {
   color: #c52b2f;
   padding: 0;
   position: absolute;
@@ -24,6 +29,7 @@
   left: 0;
   overflow: hidden;
 }
+
 .rating-lower {
   padding: 0;
   display: flex;
@@ -31,20 +37,20 @@
 }
 </style>
 </head>
-
-<img src="https://i.imgur.com/iGZSVXe.png" alt="SFF">
 @if (_movies != null)
-{
+{   
+    <div class="card-groupsssssss" >
     @foreach (var movie in _movies)
     {
     <div class="card" style="width: 18rem;">
-    <img src= "https://i.pinimg.com/originals/0f/03/e6/0f03e6733b0cf567cc92e8e20290462f.jpg" class="card-img-top" alt="...">
+    <img src= "@movie.ImageURL"  class="card-img-top" alt="x...">
+    
     <div class="card-body">
     <h5 class="card-title">@movie.Title</h5>
     <p class="card-text">@movie.Description</p>
-    
+    <br>
     <div class="rating">
-    <div class="ratingUpper" style=@($"{movie.Rating}%")>
+    <div class="rating-upper" style="width: @(Math.Round(movie.Rating*20))%" > 
         <span>★</span>
         <span>★</span>
         <span>★</span>
@@ -59,30 +65,32 @@
         <span>★</span>
     </div>
 </div>
-<br><br>
-
-
-
-    <a href="#" class="btn btn-primary">Rent Movie</a>
     </div>
+    <div class="card-footer">
+            <button @onclick="@(() => ShowMovieReview(movie))" class="btn btn-primary">Edit Movie</button>
+        </div>
     </div>
     }
+    </div>
 }
 else{
     <p>Couldnt be loaded</p>
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @code{
-    private Movie[] _movies;
+  private Movie[] _movies;
+      private FilmStudio[] _studios;
+      protected override async Task OnInitializedAsync() =>
+          _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
 
-    protected override async Task OnInitializedAsync() =>
-        _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
-    public class Movie
-    {
-        public int ID { get; set; }
-        public string Title { get; set; }
-        public double Rating { get; set; }
-        public string ImageURL { get; set; }
-        public string Description { get; set; }
-    }
+      void ShowMovieReview(Movie movie)
+      {
+          var parameters = new ModalParameters();
+          parameters.Add("Movie", movie);
+          parameters.Add("FilmStudioId", 1);
+
+          Modal.Show<MovieReview>("Post Review for: " + movie.Title, parameters);
+      }
+
 }
