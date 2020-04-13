@@ -38,22 +38,6 @@ namespace WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Rating = table.Column<int>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    MovieId = table.Column<int>(nullable: false),
-                    FilmStudioId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RentLogs",
                 columns: table => new
                 {
@@ -81,6 +65,35 @@ namespace WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Rating = table.Column<int>(nullable: false),
+                    Comment = table.Column<string>(nullable: true),
+                    MovieId = table.Column<int>(nullable: false),
+                    FilmStudioId = table.Column<int>(nullable: false),
+                    ExpireDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_FilmStudios_FilmStudioId",
+                        column: x => x.FilmStudioId,
+                        principalTable: "FilmStudios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Trivias",
                 columns: table => new
                 {
@@ -88,7 +101,7 @@ namespace WebAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     MovieId = table.Column<int>(nullable: false),
                     FilmStudioId = table.Column<int>(nullable: false),
-                    TriviaInfo = table.Column<string>(nullable: true)
+                    ExpireDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,6 +128,16 @@ namespace WebAPI.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_RentLogs_MovieId",
                 table: "RentLogs",
+                column: "MovieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_FilmStudioId",
+                table: "Reviews",
+                column: "FilmStudioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_MovieId",
+                table: "Reviews",
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(

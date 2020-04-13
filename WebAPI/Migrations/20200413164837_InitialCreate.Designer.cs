@@ -9,7 +9,7 @@ using WebAPI.Models;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(MoviesForHireContext))]
-    [Migration("20200412220228_InitialCreate")]
+    [Migration("20200413164837_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,6 +91,9 @@ namespace WebAPI.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("FilmStudioId")
                         .HasColumnType("INTEGER");
 
@@ -102,6 +105,10 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FilmStudioId");
+
+                    b.HasIndex("MovieId");
+
                     b.ToTable("Reviews");
                 });
 
@@ -111,14 +118,14 @@ namespace WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("FilmStudioId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MovieId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("TriviaInfo")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -130,6 +137,21 @@ namespace WebAPI.Migrations
                 });
 
             modelBuilder.Entity("WebAPI.Models.RentLog", b =>
+                {
+                    b.HasOne("WebAPI.Models.FilmStudio", "FilmStudio")
+                        .WithMany()
+                        .HasForeignKey("FilmStudioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebAPI.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WebAPI.Models.Review", b =>
                 {
                     b.HasOne("WebAPI.Models.FilmStudio", "FilmStudio")
                         .WithMany()
