@@ -37,6 +37,9 @@
 }
 </style>
 </head>
+<h1>Can't find your movie below? Search for it here:</h1>
+<h1>Or add it here: </h1>
+<button @onclick="@AddMovie" class="btn btn-primary">Add Movie</button>
 @if (_movies != null)
 {   
     <div class="card-groupsssssss" >
@@ -67,7 +70,7 @@
 </div>
     </div>
     <div class="card-footer">
-            <button @onclick="@(() => ShowMovieReview(movie))" class="btn btn-primary">Edit Movie</button>
+            <button @onclick="@(() => ShowMovieReview(movie))" class="btn btn-primary">Review</button>
         </div>
     </div>
     }
@@ -81,6 +84,7 @@ else{
 @code{
   private Movie[] _movies;
       private FilmStudio[] _studios;
+      private string searchString;
       protected override async Task OnInitializedAsync() =>
           _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
 
@@ -88,9 +92,16 @@ else{
       {
           var parameters = new ModalParameters();
           parameters.Add("Movie", movie);
-          parameters.Add("FilmStudioId", 1);
 
           Modal.Show<MovieReview>("Post Review for: " + movie.Title, parameters);
+      }
+      void SearchForMovie()
+      {
+
+      }
+      void AddMovie()
+      {
+        Modal.Show<AddMovie>("Add Movie");
       }
 
 }

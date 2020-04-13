@@ -5,12 +5,17 @@
 <div class="simple-form">
     <div class="form-group">
         <label for="review-rating">Rating</label>
-        <input @bind="@rating" type="text" class="form-control" id="review-rating" />
+        <input @bind="@Rating" type="number" class="form-control" id="review-rating" />
+    </div>
+
+    <div class="form-group">
+        <label for="review-rating">FilmStudio</label>
+        <input @bind="@FilmStudioId" type="number" class="form-control" id="review-rating" />
     </div>
 
     <div class="form-group">
         <label for="review-comment">Comment</label>
-        <input @bind="@comment" type="text" class="form-control" id="review-comment" />
+        <input @bind="@Comment" type="text" class="form-control" id="review-comment" />
     </div>
 
     <button @onclick="AddReview" class="btn btn-primary">Submit</button>
@@ -18,21 +23,20 @@
     </div>
 
 @code {
-    private string APIURL = "http://localhost:4000/api/reviews";
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter] public Movie Movie { get; set; }
-    [Parameter] public int FilmStudioId {get;set;}
-    int rating;
-    string comment;
+    int FilmStudioId;
+    int Rating;
+    string Comment;
 
     //Movie Movie {get;set;}
 
     private async Task AddReview()
     {
-        var review = new Review{StudioId = FilmStudioId, Comment = comment, MovieId = Movie.Id, Rating = rating};
-        await Http.PostJsonAsync(APIURL, review);
+        var review = new Review{FilmStudioId = FilmStudioId, Comment = Comment, MovieId = Movie.Id, Rating = Rating};
+        await Http.PostJsonAsync("http://localhost:4000/api/reviews", review);
         toastService.ShowSuccess("Your Review was succesfully added", "Review Added!");
         BlazoredModal.Close(ModalResult.Ok<Movie>(Movie));
     }

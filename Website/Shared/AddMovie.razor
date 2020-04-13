@@ -1,0 +1,47 @@
+@inject IModalService ModalService
+@inject HttpClient Http
+@inject IToastService toastService
+
+<div class="simple-form">
+    <div class="form-group">
+        <label for="movie-rating">Title</label>
+        <input @bind="@title" type="text" class="form-control" id="review-rating" />
+    </div>
+
+    <div class="form-group">
+        <label for="movie-quantity">Quantity</label>
+        <input @bind="@quantity" type="number" class="form-control" id="review-rating" />
+    </div>
+
+    <div class="form-group">
+        <label for="movie-imageURL">ImageURL</label>
+        <input @bind="@imageURL" type="text" class="form-control" id="review-comment" />
+    </div>
+    <div class="form-group">
+        <label for="movie-description">Description</label>
+        <input @bind="@description" type="text" class="form-control" id="review-comment" />
+    </div>
+
+    <button @onclick="Add" class="btn btn-primary">Submit</button>
+    <button @onclick="BlazoredModal.Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+    string description;
+    string imageURL;
+    int quantity;
+    string title;
+
+    //Movie Movie {get;set;}
+
+    private async Task Add()
+    {
+        var movie = new Movie{Title = title, Description = description, ImageURL = imageURL, Quantity = quantity};
+        await Http.PostJsonAsync("http://localhost:4000/api/movies", movie);
+        toastService.ShowSuccess("The Movie was succesfully added", "Movie Added!");
+        BlazoredModal.Close();
+    }
+
+}
