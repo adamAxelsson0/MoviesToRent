@@ -37,10 +37,10 @@ namespace WebAPI
                 builder.AllowAnyOrigin().AllowAnyMethod();
             });
         });
-            /*services.AddDbContext<MoviesForHireContext>(opt =>
-               opt.UseSqlite("Data Source = movieRentingDB.db;"));*/
+            services.AddDbContext<MoviesForHireContext>(opt =>
+               opt.UseSqlite("Data Source = movieRentingDB.db;"));
             
-            services.AddDbContext<MoviesForHireContext>();
+            //services.AddDbContext<MoviesForHireContext>();
             services.AddControllers();
         }
 

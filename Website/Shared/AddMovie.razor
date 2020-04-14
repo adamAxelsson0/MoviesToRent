@@ -5,21 +5,22 @@
 <div class="simple-form">
     <div class="form-group">
         <label for="movie-rating">Title</label>
-        <input @bind="@title" type="text" class="form-control" id="review-rating" />
+        <input @bind="@title" type="text" class="form-control"/>
     </div>
 
     <div class="form-group">
         <label for="movie-quantity">Quantity</label>
-        <input @bind="@quantity" type="number" class="form-control" id="review-rating" />
+        <input @bind="@quantity" type="number" max="5" min="0" class="form-control" />
     </div>
 
     <div class="form-group">
         <label for="movie-imageURL">ImageURL</label>
-        <input @bind="@imageURL" type="text" class="form-control" id="review-comment" />
+        <input @bind="@imageURL" type="text" class="form-control"  />
     </div>
+
     <div class="form-group">
         <label for="movie-description">Description</label>
-        <input @bind="@description" type="text" class="form-control" id="review-comment" />
+         <textarea @bind="@description" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
     </div>
 
     <button @onclick="Add" class="btn btn-primary">Submit</button>

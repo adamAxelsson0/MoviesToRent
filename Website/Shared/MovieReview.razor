@@ -2,43 +2,54 @@
 @inject HttpClient Http
 @inject IToastService toastService
 
+@if(_filmstudios != null){
 <div class="simple-form">
     <div class="form-group">
         <label for="review-rating">Rating</label>
-        <input @bind="@Rating" type="number" class="form-control" id="review-rating" />
+        <input @bind="@Rating" type="number" class="form-control" min="1" max ="5" id="review-rating" />
     </div>
 
     <div class="form-group">
         <label for="review-rating">FilmStudio</label>
-        <input @bind="@FilmStudioId" type="number" class="form-control" id="review-rating" />
+        <select class="form-control" @bind="@FilmStudioId">
+        @foreach (var item in _filmstudios)
+        {
+        <option value="@item.Id">@item.Name</option>
+        }
+        </select>
     </div>
 
     <div class="form-group">
         <label for="review-comment">Comment</label>
-        <input @bind="@Comment" type="text" class="form-control" id="review-comment" />
+        <textarea @bind="@Comment" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+
     </div>
 
     <button @onclick="AddReview" class="btn btn-primary">Submit</button>
     <button @onclick="BlazoredModal.Cancel" class="btn btn-secondary">Cancel</button>
     </div>
-
+}
 @code {
-
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter] public Movie Movie { get; set; }
     int FilmStudioId;
     int Rating;
     string Comment;
+    FilmStudio[] _filmstudios;
 
     //Movie Movie {get;set;}
 
     private async Task AddReview()
     {
-        var review = new Review{FilmStudioId = FilmStudioId, Comment = Comment, MovieId = Movie.Id, Rating = Rating};
+        var review = new Review { FilmStudioId = FilmStudioId, Comment = Comment, MovieId = Movie.Id, Rating = Rating };
         await Http.PostJsonAsync("http://localhost:4000/api/reviews", review);
         toastService.ShowSuccess("Your Review was succesfully added", "Review Added!");
         BlazoredModal.Close(ModalResult.Ok<Movie>(Movie));
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        _filmstudios = await Http.GetJsonAsync<FilmStudio[]>("http://localhost:4000/api/filmstudios");
     }
 
 }

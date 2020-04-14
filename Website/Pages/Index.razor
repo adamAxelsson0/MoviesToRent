@@ -1,7 +1,6 @@
 ﻿@page "/"
 @inject  HttpClient Http;
 @inject IModalService Modal
-@using System.Linq;
 <head>
   <base href="~/" />
 <style>
@@ -37,9 +36,6 @@
 }
 </style>
 </head>
-<h1>Can't find your movie below? Search for it here:</h1>
-<h1>Or add it here: </h1>
-<button @onclick="@AddMovie" class="btn btn-primary">Add Movie</button>
 @if (_movies != null)
 {   
     <div class="card-groupsssssss" >
@@ -71,6 +67,9 @@
     </div>
     <div class="card-footer">
             <button @onclick="@(() => ShowMovieReview(movie))" class="btn btn-primary">Review</button>
+            <button @onclick="@(() => DeleteMovie(movie))" class="btn btn-danger">Delete</button>
+            <button @onclick="@(() => EditMovie(movie))" class="btn btn-info">Edit</button>
+            <button @onclick="@(() => RentMovie(movie))" class="btn btn-info">Rent</button>
         </div>
     </div>
     }
@@ -83,10 +82,24 @@ else{
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @code{
   private Movie[] _movies;
-      private FilmStudio[] _studios;
-      private string searchString;
-      protected override async Task OnInitializedAsync() =>
+      protected override async Task OnInitializedAsync()
+      {
           _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
+          foreach (var movie in _movies)
+          {
+              var reviews = await Http.GetJsonAsync<Review[]>("http://localhost:4000/api/reviews");
+
+              reviews = reviews.Where(x => x.MovieId == movie.Id).ToArray();
+              if (reviews.Length == 0)
+              {
+                  movie.Rating = 0;
+              }
+              else
+              {
+                  movie.Rating = reviews.Sum(x => x.Rating) / Convert.ToDouble(reviews.Length);
+              }
+          }
+      }
 
       void ShowMovieReview(Movie movie)
       {
@@ -99,9 +112,25 @@ else{
       {
 
       }
-      void AddMovie()
+      void DeleteMovie(Movie movie)
       {
-        Modal.Show<AddMovie>("Add Movie");
-      }
+          var parameters = new ModalParameters();
+          parameters.Add("Movie", movie);
 
+          Modal.Show<DeleteMovie>("Deleting " + movie.Title, parameters);
+      }
+      void EditMovie(Movie movie)
+      {
+          var parameters = new ModalParameters();
+          parameters.Add("Movie", movie);
+
+          Modal.Show<EditMovie>("Editing " + movie.Title, parameters);
+      }
+      void RentMovie(Movie movie)
+      {
+          var parameters = new ModalParameters();
+          parameters.Add("Movie", movie);
+
+          Modal.Show<RentMovie>("Renting " + movie.Title, parameters);
+      }
 }

@@ -1,0 +1,57 @@
+@inject IModalService ModalService
+@inject HttpClient Http
+@inject IToastService toastService
+
+@if(_movies != null && _filmstudios != null){
+<div class="simple-form">
+    <div class="form-group">
+        <label for="trivia-triviaText">Trivia</label>
+         <textarea @bind="@triviaText" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="review-rating">Movie</label>
+        <select class="form-control" @bind="@movieId">
+        @foreach (var item in _movies)
+        {
+        <option value="@item.Id">@item.Title</option>
+        }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="review-rating">FilmStudio</label>
+        <select class="form-control" @bind="@filmStudioId">
+        @foreach (var item in _filmstudios)
+        {
+        <option value="@item.Id">@item.Name</option>
+        }
+        </select>
+    </div>
+
+    <button @onclick="Add" class="btn btn-primary">Submit</button>
+    <button @onclick="BlazoredModal.Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+}
+@code {
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+    int filmStudioId;
+    int movieId;
+    string triviaText;
+    FilmStudio[] _filmstudios;
+    Movie[] _movies;
+
+    private async Task Add()
+    {
+        var trivia = new Trivia{FilmStudioId = filmStudioId, TriviaText = triviaText, MovieId = movieId};
+        await Http.PostJsonAsync("http://localhost:4000/api/trivias", trivia);
+        toastService.ShowSuccess("The Trivia was succesfully added", "Trivia Added!");
+        BlazoredModal.Close();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        _filmstudios = await Http.GetJsonAsync<FilmStudio[]>("http://localhost:4000/api/filmstudios");
+        _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
+    }
+
+}

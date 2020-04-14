@@ -52,7 +52,7 @@ namespace WebAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(review).State = EntityState.Modified;
+            _context.Entry(review).State = EntityState.Modified;    
 
             try
             {
@@ -79,10 +79,18 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Review>> PostReview(Review review)
         {
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
+            review = await review.ReviewMovie(_context);
+            if (review != null)
+            {
+                _context.Reviews.Add(review);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReview", new { id = review.Id }, review);
+                return CreatedAtAction("GetReview", new { id = review.Id }, review);
+            }
+            else
+            {
+                throw new InvalidOperationException("Could not review movie.");
+            }
         }
 
         // DELETE: api/Review/5

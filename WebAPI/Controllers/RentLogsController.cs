@@ -86,10 +86,21 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<RentLog>> PostRentLog(RentLog rentLog)
         {
-            _context.RentLogs.Add(rentLog);
-            await _context.SaveChangesAsync();
+            rentLog = await rentLog.CheckRental(_context);
 
-            return CreatedAtAction("GetRentLog", new { id = rentLog.Id }, rentLog);
+            if (rentLog != null)
+            {
+                var movie = await _context.Movies.FindAsync(rentLog.MovieId);
+                movie = movie.Rental();
+
+                _context.RentLogs.Add(rentLog);
+                _context.Entry(movie).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetrentLog", new { id = rentLog.Id }, rentLog);
+            }
+
+            throw new InvalidOperationException("The rental could not be completed.");
         }
 
         // DELETE: api/RentLog/5
@@ -102,7 +113,11 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
+            var movie = await _context.Movies.FindAsync(rentLog.MovieId);
+            movie = movie.RentalReturn();
+
             _context.RentLogs.Remove(rentLog);
+            _context.Entry(movie).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return rentLog;
