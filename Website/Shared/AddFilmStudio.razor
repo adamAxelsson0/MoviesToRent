@@ -1,0 +1,34 @@
+@inject IModalService ModalService
+@inject HttpClient Http
+@inject IToastService toastService
+
+<div class="simple-form">
+    <div class="form-group">
+        <label for="studio-name">Studio Name</label>
+        <input @bind="@_name" type="text" class="form-control"/>
+    </div>
+
+    <div class="form-group">
+        <label for="studio-location">Location</label>
+        <input @bind="@_location" type="text" class="form-control" />
+    </div>
+
+    <button @onclick="Add" class="btn btn-primary">Submit</button>
+    <button @onclick="BlazoredModal.Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+    string _name;
+    string _location;
+
+    private async Task Add()
+    {
+        var studio = new FilmStudio{Location = _location, Name = _name};
+        await Http.PostJsonAsync("http://localhost:4000/api/filmstudios", studio);
+        toastService.ShowSuccess("The studio was succesfully added, Studio Added!");
+        BlazoredModal.Close();
+    }
+
+}

@@ -9,15 +9,23 @@
          <textarea @bind="@triviaText" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
     </div>
 
-    <div class="form-group">
+        @if(Movie == null){
+        <div class="form-group">
         <label for="review-rating">Movie</label>
-        <select class="form-control" @bind="@movieId">
+        <select class="form-control" @bind="@movieId" >
         @foreach (var item in _movies)
         {
-        <option value="@item.Id">@item.Title</option>
+        <option value="@item.Id" selected>@item.Title</option>
         }
         </select>
-    </div>
+        
+        
+        </div>
+        }
+        else
+        {
+            movieId = Movie.Id;
+        }
     <div class="form-group">
         <label for="review-rating">FilmStudio</label>
         <select class="form-control" @bind="@filmStudioId">
@@ -33,8 +41,8 @@
     </div>
 }
 @code {
-
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+    [Parameter] public Movie Movie { get; set; }
     int filmStudioId;
     int movieId;
     string triviaText;
@@ -43,7 +51,7 @@
 
     private async Task Add()
     {
-        var trivia = new Trivia{FilmStudioId = filmStudioId, TriviaText = triviaText, MovieId = movieId};
+        var trivia = new Trivia { FilmStudioId = filmStudioId, TriviaText = triviaText, MovieId = movieId };
         await Http.PostJsonAsync("http://localhost:4000/api/trivias", trivia);
         toastService.ShowSuccess("The Trivia was succesfully added", "Trivia Added!");
         BlazoredModal.Close();

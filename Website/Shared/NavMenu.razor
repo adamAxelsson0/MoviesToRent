@@ -1,14 +1,14 @@
 ﻿@inject  HttpClient Http;
 @inject IModalService Modal
 <div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">SFF</a>
+    <a class="navbar-brand" href="">Sveriges Förenade FilmStudios</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
-        <button @onclick="@AddMovie" class="btn btn-primary">Search</button>
         <button @onclick="@AddMovie" class="btn btn-primary">Add Movie</button>
         <button @onclick="@AddTrivia" class="btn btn-primary">Add Trivia</button>
+        <button @onclick="@AddFilmStudio" class="btn btn-primary">Add FilmStudio</button>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
@@ -18,8 +18,18 @@
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link" href="Trivias">
+                <span class="oi oi-excerpt" aria-hidden="true"></span> Trivias
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="Rentlog">
+                <span class="oi oi-clipboard" aria-hidden="true"></span> Rentlog
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="Reviews">
+                <span class="oi oi-pencil" aria-hidden="true"></span> Reviews
             </NavLink>
         </li>
     </ul>
@@ -29,6 +39,7 @@
     private bool collapseNavMenu = true;
     Movie[] _movies;
 
+
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
@@ -36,13 +47,19 @@
         collapseNavMenu = !collapseNavMenu;
     }
     void AddMovie()
-      {
+    {
         Modal.Show<AddMovie>("Add Movie");
-      }
-      void AddTrivia()
-      {
-        Modal.Show<AddTrivia>("Add Trivia");
-      }
+    }
+    void AddFilmStudio()
+    {
+        Modal.Show<AddFilmStudio>("Add Film Studio");
+    }
+    void AddTrivia()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Movie", null);
+        Modal.Show<AddTrivia>("Adding Trivia", parameters);
+    }
     protected override async Task OnInitializedAsync() =>
           _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
 }

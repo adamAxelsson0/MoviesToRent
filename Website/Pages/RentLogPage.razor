@@ -1,0 +1,35 @@
+@page "/Rentlog"
+@inject  HttpClient Http;
+@inject IModalService Modal
+
+@if (_rentLogs != null)
+{   
+    <div class="card-groups" >
+    @foreach (var rental in _rentLogs)
+    {
+    <div class="card" style="width: 18rem;">
+    <!-- <img src= "@rental.Movie.ImageURL"  class="card-img-top" alt="x..."> 
+    -->
+    
+    <div class="card-body">
+    <h5 class="card-title">@rental.MovieId</h5>
+    <p class="card-text">@rental.FilmStudioId</p>
+    </div>
+
+    <div class="card-footer">
+        </div>
+    </div>
+    }
+    </div>
+}
+else{
+    <p>Couldnt be loaded</p>
+}
+
+@code{
+    private RentLog[] _rentLogs;
+    protected override async Task OnInitializedAsync()
+    {
+        _rentLogs = await Http.GetJsonAsync<RentLog[]>("http://localhost:4000/api/rentlogs");
+    }
+}

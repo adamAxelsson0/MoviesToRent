@@ -67,9 +67,10 @@
     </div>
     <div class="card-footer">
             <button @onclick="@(() => ShowMovieReview(movie))" class="btn btn-primary">Review</button>
+            <button @onclick="@(() => RentMovie(movie))" class="btn btn-primary">Rent</button>
+            <button @onclick="@(() => AddTrivia(movie))" class="btn btn-primary">Add Trivia</button>
+            <button @onclick="@(() => EditMovie(movie))" class="btn btn-warning">Edit</button>
             <button @onclick="@(() => DeleteMovie(movie))" class="btn btn-danger">Delete</button>
-            <button @onclick="@(() => EditMovie(movie))" class="btn btn-info">Edit</button>
-            <button @onclick="@(() => RentMovie(movie))" class="btn btn-info">Rent</button>
         </div>
     </div>
     }
@@ -92,12 +93,20 @@ else{
             reviews = reviews.Where(x => x.MovieId == movie.Id).ToArray();
             if (reviews.Length == 0)
             {
-                return;
+                movie.Rating = 0;
             }
-            movie.Rating = reviews.Sum(x => x.Rating) / Convert.ToDouble(reviews.Length);
+            else
+            {
+                movie.Rating = reviews.Sum(x => x.Rating) / Convert.ToDouble(reviews.Length);
+            }
         }
     }
-
+    void AddTrivia(Movie movie)
+      {
+        var parameters = new ModalParameters();
+        parameters.Add("Movie", movie);
+        Modal.Show<AddTrivia>("Adding Trivia", parameters);
+      }
     void ShowMovieReview(Movie movie)
     {
         var parameters = new ModalParameters();
