@@ -81,56 +81,53 @@ else{
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @code{
-  private Movie[] _movies;
-      protected override async Task OnInitializedAsync()
-      {
-          _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
-          foreach (var movie in _movies)
-          {
-              var reviews = await Http.GetJsonAsync<Review[]>("http://localhost:4000/api/reviews");
+    private Movie[] _movies;
+    protected override async Task OnInitializedAsync()
+    {
+        _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
+        foreach (var movie in _movies)
+        {
+            var reviews = await Http.GetJsonAsync<Review[]>("http://localhost:4000/api/reviews");
 
-              reviews = reviews.Where(x => x.MovieId == movie.Id).ToArray();
-              if (reviews.Length == 0)
-              {
-                  movie.Rating = 0;
-              }
-              else
-              {
-                  movie.Rating = reviews.Sum(x => x.Rating) / Convert.ToDouble(reviews.Length);
-              }
-          }
-      }
+            reviews = reviews.Where(x => x.MovieId == movie.Id).ToArray();
+            if (reviews.Length == 0)
+            {
+                return;
+            }
+            movie.Rating = reviews.Sum(x => x.Rating) / Convert.ToDouble(reviews.Length);
+        }
+    }
 
-      void ShowMovieReview(Movie movie)
-      {
-          var parameters = new ModalParameters();
-          parameters.Add("Movie", movie);
+    void ShowMovieReview(Movie movie)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Movie", movie);
 
-          Modal.Show<MovieReview>("Post Review for: " + movie.Title, parameters);
-      }
-      void SearchForMovie()
-      {
+        Modal.Show<MovieReview>("Post Review for: " + movie.Title, parameters);
+    }
+    void SearchForMovie()
+    {
 
-      }
-      void DeleteMovie(Movie movie)
-      {
-          var parameters = new ModalParameters();
-          parameters.Add("Movie", movie);
+    }
+    void DeleteMovie(Movie movie)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Movie", movie);
 
-          Modal.Show<DeleteMovie>("Deleting " + movie.Title, parameters);
-      }
-      void EditMovie(Movie movie)
-      {
-          var parameters = new ModalParameters();
-          parameters.Add("Movie", movie);
+        Modal.Show<DeleteMovie>("Deleting " + movie.Title, parameters);
+    }
+    void EditMovie(Movie movie)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Movie", movie);
 
-          Modal.Show<EditMovie>("Editing " + movie.Title, parameters);
-      }
-      void RentMovie(Movie movie)
-      {
-          var parameters = new ModalParameters();
-          parameters.Add("Movie", movie);
+        Modal.Show<EditMovie>("Editing " + movie.Title, parameters);
+    }
+    void RentMovie(Movie movie)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Movie", movie);
 
-          Modal.Show<RentMovie>("Renting " + movie.Title, parameters);
-      }
+        Modal.Show<RentMovie>("Renting " + movie.Title, parameters);
+    }
 }

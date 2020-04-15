@@ -13,7 +13,6 @@ namespace WebAPI.Models
         public Movie Movie { get; set; }
         public int FilmStudioId { get; set; }
         public FilmStudio FilmStudio { get; set; }
-        public DateTime ExpireDate { get; set; }
         private bool CheckRating()
         {
             if (this.Rating > 0 && this.Rating < 6)

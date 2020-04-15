@@ -26,6 +26,11 @@ namespace WebAPI.Controllers
         {
             return await _context.Movies.ToListAsync();
         }
+        [HttpGet("InStock")]
+        public async Task<ActionResult<IEnumerable<Movie>>> GetMoviesInStock()
+        {
+            return await _context.Movies.Where(x => x.Quantity > 0).ToListAsync();
+        }
 
         // GET: api/Movies/5
         [HttpGet("{id}")]

@@ -26,7 +26,12 @@ namespace WebAPI.Controllers
         {
             return await _context.Reviews.ToListAsync();
         }
-
+        // GET: api/Review/FromStudio/1
+        [HttpGet("FromStudio/{id}")]
+        public async Task<ActionResult<IEnumerable<Review>>> GetReviewsFromStudio(int id)
+        {
+            return await _context.Reviews.Where(x => x.FilmStudioId == id).ToListAsync();
+        }
         // GET: api/Review/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Review>> GetReview(int id)

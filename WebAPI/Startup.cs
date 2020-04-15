@@ -40,8 +40,10 @@ namespace WebAPI
             services.AddDbContext<MoviesForHireContext>(opt =>
                opt.UseSqlite("Data Source = movieRentingDB.db;"));
             
-            //services.AddDbContext<MoviesForHireContext>();
             services.AddControllers();
+
+            services.AddControllers()
+            .AddXmlSerializerFormatters();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

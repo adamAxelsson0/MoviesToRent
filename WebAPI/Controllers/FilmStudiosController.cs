@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace WebAPI.Controllers
 {
@@ -72,6 +73,27 @@ namespace WebAPI.Controllers
 
             return NoContent();
         }
+        // [HttpPatch]
+        // public IActionResult JsonPatchWithModelState([FromBody] JsonPatchDocument<FilmStudio> patchDoc)
+        // {
+        //     if (patchDoc != null)
+        //     {
+        //         var studio = new FilmStudio();
+
+        //         patchDoc.ApplyTo(studio, ModelState);
+
+        //         if (!ModelState.IsValid)
+        //         {
+        //             return BadRequest(ModelState);
+        //         }
+
+        //         return new ObjectResult(studio);
+        //     }
+        //     else
+        //     {
+        //         return BadRequest(ModelState);
+        //     }
+        // }
 
         // POST: api/FilmStudio
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for

@@ -26,6 +26,12 @@ namespace WebAPI.Controllers
         {
             return await _context.RentLogs.ToListAsync();
         }
+        // GET: api/RentLog/FromStudio/1
+        [HttpGet("FromStudio/{id}")]
+        public async Task<ActionResult<IEnumerable<RentLog>>> GetRentLogsFromStudio(int id)
+        {
+            return await _context.RentLogs.ToListAsync();
+        }
 
         // GET: api/RentLog/5
         [HttpGet("{id}")]
@@ -41,12 +47,6 @@ namespace WebAPI.Controllers
             return rentLog;
         }
         
-        // GET: api/Rentings/FromStudio/1
-        [HttpGet("/FromStudio/{studioID}")]
-        public async Task<ActionResult<IEnumerable<RentLog>>> GetMovies(int studioID)
-        {
-            return await _context.RentLogs.Where(x=> x.FilmStudioId == studioID).ToListAsync();
-        }
 
         // PUT: api/RentLog/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
@@ -90,6 +90,8 @@ namespace WebAPI.Controllers
 
             if (rentLog != null)
             {
+                //need to check since our get wont always include a Movie(if it was posted by postman for example)
+                //need to double check with rentlogs movieid prop to get movie
                 var movie = await _context.Movies.FindAsync(rentLog.MovieId);
                 movie = movie.Rental();
 
