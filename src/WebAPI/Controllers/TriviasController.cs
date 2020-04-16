@@ -24,20 +24,20 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Trivia>>> GetTrivias()
         {
-            return await _context.Trivias.ToListAsync();
+            return await _context.Trivias.Include(x => x.Movie).Include(x => x.FilmStudio).ToListAsync();
         }
         // GET: api/Trivia/FromStudio/1
         [HttpGet("FromStudio/{id}")]
         public async Task<ActionResult<IEnumerable<Trivia>>> GetTriviasFromStudio(int id)
         {
-            return await _context.Trivias.Where(x => x.FilmStudioId == id).ToListAsync();
+            return await _context.Trivias.Where(x => x.FilmStudioId == id).Include(x => x.Movie).Include(x => x.FilmStudio).ToListAsync();
         }
 
         // GET: api/Trivia/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Trivia>> GetTrivia(int id)
         {
-            var trivia = await _context.Trivias.Where(t => t.Id == id).Include(a => a.Movie).FirstOrDefaultAsync();
+            var trivia = await _context.Trivias.Where(x => x.Id == id).Include(x => x.Movie).Include(x => x.FilmStudio).FirstOrDefaultAsync();
 
             if (trivia == null)
             {

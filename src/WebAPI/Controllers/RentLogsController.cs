@@ -24,20 +24,20 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RentLog>>> GetRentLogs()
         {
-            return await _context.RentLogs.ToListAsync();
+            return await _context.RentLogs.Include(x => x.Movie).Include(x => x.FilmStudio).ToListAsync();
         }
         // GET: api/RentLog/FromStudio/1
         [HttpGet("FromStudio/{id}")]
         public async Task<ActionResult<IEnumerable<RentLog>>> GetRentLogsFromStudio(int id)
         {
-            return await _context.RentLogs.ToListAsync();
+            return await _context.RentLogs.Include(x => x.Movie).Include(x => x.FilmStudio).ToListAsync();
         }
 
         // GET: api/RentLog/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RentLog>> GetRentLog(int id)
         {
-            var rentLog = await _context.RentLogs.FindAsync(id);
+            var rentLog = await _context.RentLogs.Where(x => x.Id == id).Include(x => x.Movie).Include(x => x.FilmStudio).FirstOrDefaultAsync();
 
             if (rentLog == null)
             {
@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
 
             return rentLog;
         }
-        
+
 
         // PUT: api/RentLog/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
@@ -109,15 +109,24 @@ namespace WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<RentLog>> DeleteRentLog(int id)
         {
-            var rentLog = await _context.RentLogs.FindAsync(id);
+            var rentLog = await _context.RentLogs.Where(x => x.Id == id).Include(x => x.Movie).Include(x => x.FilmStudio).FirstOrDefaultAsync();
             if (rentLog == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movies.FindAsync(rentLog.MovieId);
-            movie = movie.RentalReturn();
+            //In case can't map movie to rentlog, could be removed if admin follows instructions
+            var movie = new Movie();
+            if (rentLog.Movie == null)
+            {
+                movie = await _context.Movies.FindAsync(rentLog.MovieId);
+            }
+            else
+            {
+                movie = rentLog.Movie;
+            }
 
+            movie = movie.RentalReturn();
             _context.RentLogs.Remove(rentLog);
             _context.Entry(movie).State = EntityState.Modified;
             await _context.SaveChangesAsync();

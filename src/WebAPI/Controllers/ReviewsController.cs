@@ -24,19 +24,19 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
         {
-            return await _context.Reviews.ToListAsync();
+            return await _context.Reviews.Include(x => x.Movie).Include(x => x.FilmStudio).ToListAsync();
         }
         // GET: api/Review/FromStudio/1
         [HttpGet("FromStudio/{id}")]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviewsFromStudio(int id)
         {
-            return await _context.Reviews.Where(x => x.FilmStudioId == id).ToListAsync();
+            return await _context.Reviews.Where(x => x.FilmStudioId == id).Include(x => x.Movie).Include(x => x.FilmStudio).ToListAsync();
         }
         // GET: api/Review/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Review>> GetReview(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
+            var review = await _context.Reviews.Where(x => x.Id == id).Include(x => x.Movie).Include(x => x.FilmStudio).FirstOrDefaultAsync();
 
             if (review == null)
             {
