@@ -1,0 +1,32 @@
+@inject IModalService ModalService
+@inject HttpClient Http
+@inject IToastService toastService
+
+<div class="simple-form">
+
+    <div class="form-group">
+        <label for="review-rating">Title</label>
+        <input @bind="@Review.Rating" type="number" class="form-control" min="1" max="5" placeholder="@Review.Rating"/>
+    </div>
+
+    <div class="form-group">
+        <label for="review-comment">Comment</label>
+        <textarea @bind="@Review.Comment" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+
+    </div>
+
+    <button @onclick="Edit" class="btn btn-primary">Edit</button>
+    <button @onclick="BlazoredModal.Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Review Review { get; set; }
+
+    private async Task Edit()
+    {
+        await Http.PutJsonAsync($"http://localhost:4000/api/reviews/{Review.Id}", Review);
+        toastService.ShowSuccess("Your Review was succesfully edited, refresh to see result", "Review Edited!");
+        BlazoredModal.Close(ModalResult.Ok<Review>(Review));
+    }
+}

@@ -19,7 +19,7 @@
     <div class="form-group">
         <form action="/action_page.php">
     <label for="expireDate">Expire Date:</label>
-    <input type="date"  @bind="_date">
+    <input type="date" placeholder="@DateTime.Now.ToString()" min="@DateTime.Now.ToString("yyyy/MM/dd")" @bind="_date">
     </form>
     </div>
 

@@ -36,10 +36,11 @@
 }
 </style>
 </head>
+<input @bind-value="searchText" @bind-value:event="oninput" placeholder="Search for Movie Title"/>
 @if (_movies != null)
 {   
     <div class="card-groupsssssss" >
-    @foreach (var movie in _movies)
+    @foreach (var movie in _movies.Where(x => x.Title.ToLower().Contains(searchText.ToLower())).ToList())
     {
     <div class="card" style="width: 18rem;">
     <img src= "@movie.ImageURL"  class="card-img-top" alt="x...">
@@ -47,7 +48,7 @@
     <div class="card-body">
     <h5 class="card-title">@movie.Title</h5>
     <p class="card-text">@movie.Description</p>
-    <br>
+    
     <div class="rating">
     <div class="rating-upper" style="width: @(Math.Round(movie.Rating*20))%" > 
         <span>★</span>
@@ -67,7 +68,13 @@
     </div>
     <div class="card-footer">
             <button @onclick="@(() => ShowMovieReview(movie))" class="btn btn-primary">Review</button>
+            @if(movie.Quantity > 0){
             <button @onclick="@(() => RentMovie(movie))" class="btn btn-primary">Rent</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-primary disabled">Not available</button>
+            }
             <button @onclick="@(() => AddTrivia(movie))" class="btn btn-primary">Add Trivia</button>
             <button @onclick="@(() => EditMovie(movie))" class="btn btn-warning">Edit</button>
             <button @onclick="@(() => DeleteMovie(movie))" class="btn btn-danger">Delete</button>
@@ -82,10 +89,11 @@ else{
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @code{
-    private Movie[] _movies;
+    private string searchText = "";
+    private List<Movie> _movies;
     protected override async Task OnInitializedAsync()
     {
-        _movies = await Http.GetJsonAsync<Movie[]>("http://localhost:4000/api/movies");
+        _movies = await Http.GetJsonAsync<List<Movie>>("http://localhost:4000/api/movies");
         foreach (var movie in _movies)
         {
             var reviews = await Http.GetJsonAsync<Review[]>("http://localhost:4000/api/reviews");

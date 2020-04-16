@@ -1,0 +1,22 @@
+@inject IModalService ModalService
+@inject HttpClient Http
+@inject IToastService toastService
+
+<div class="simple-form">
+
+
+    <button @onclick="Edit" class="btn btn-primary">Edit</button>
+    <button @onclick="BlazoredModal.Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Trivia Trivia { get; set; }
+
+    private async Task Edit()
+    {
+        await Http.PutJsonAsync($"http://localhost:4000/api/Trivias/{Trivia.Id}", Trivia);
+        toastService.ShowSuccess("Your Trivia was succesfully edited, refresh to see result", "Trivia Edited!");
+        BlazoredModal.Close(ModalResult.Ok<Trivia>(Trivia));
+    }
+}

@@ -4,32 +4,58 @@
 
 @if (_rentLogs != null)
 {   
-    <div class="card-groups" >
-    @foreach (var rental in _rentLogs)
-    {
-    <div class="card" style="width: 18rem;">
-    <!-- <img src= "@rental.Movie.ImageURL"  class="card-img-top" alt="x..."> 
-    -->
-    
-    <div class="card-body">
-    <h5 class="card-title">@rental.MovieId</h5>
-    <p class="card-text">@rental.FilmStudioId</p>
-    </div>
+<input @bind-value="searchText" @bind-value:event="oninput" placeholder="Search for Movie Title"/>
 
-    <div class="card-footer">
-        </div>
-    </div>
-    }
-    </div>
+    <table class="table table-hover table-dark">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Film Studio ID</th>
+      <th scope="col">Film Studio</th>
+      <th scope="col">Movie ID</th>
+      <th scope="col">Movie</th>
+      <th scope="col">Expire Date</th>
+    </tr>
+  </thead>
+  <tbody>
+      @foreach (var item in _rentLogs.Where(x => x.Movie.Title.ToLower().Contains(searchText.ToLower())).ToList())
+      {
+    <tr>
+      <th scope="row">@item.Id</th>
+      <td>@item.FilmStudioId</td>
+      <td>@item.FilmStudio.Name</td>
+      <td>@item.MovieId</td>
+      <td>@item.Movie.Title</td>
+      <td>@item.ExpireDate.ToString("yyyy/MM/dd")</td>
+      <button @onclick="@(() => Edit(item))" class="btn btn-info">Edit</button>
+      <button @onclick="@(() => DeleteRental(item))" class="btn btn-danger">Delete</button>
+    </tr>
+      }
+  </tbody>
+</table>
 }
 else{
     <p>Couldnt be loaded</p>
 }
 
 @code{
-    private RentLog[] _rentLogs;
+  private string searchText = "";
+    private List<RentLog> _rentLogs;
     protected override async Task OnInitializedAsync()
     {
-        _rentLogs = await Http.GetJsonAsync<RentLog[]>("http://localhost:4000/api/rentlogs");
+        _rentLogs = await Http.GetJsonAsync<List<RentLog>>("http://localhost:4000/api/rentlogs");
+    }
+     void DeleteRental(RentLog rental)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Rentlog", rental);
+
+        Modal.Show<DeleteRental>("Do you wish to delete?" , parameters);
+    }
+    void Edit(RentLog rental)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("RentLog", rental);
+        Modal.Show<EditRental>("Do you wish to edit this rental?" , parameters);
     }
 }

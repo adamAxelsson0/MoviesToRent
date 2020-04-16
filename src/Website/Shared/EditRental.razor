@@ -1,0 +1,26 @@
+@inject IModalService ModalService
+@inject HttpClient Http
+@inject IToastService toastService
+
+<div class="simple-form">
+
+    <div class="form-group">
+        <label for="review-rating">Title</label>
+        <input @bind="@RentLog.ExpireDate" type="date" class="form-control" min = "@DateTime.Now.ToString("yyyy/MM/dd")"  placeholder="@RentLog.ExpireDate.Date"/>
+    </div>
+
+    <button @onclick="Edit" class="btn btn-primary">Edit</button>
+    <button @onclick="BlazoredModal.Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public RentLog RentLog { get; set; }
+
+    private async Task Edit()
+    {
+        await Http.PutJsonAsync($"http://localhost:4000/api/RentLogs/{RentLog.Id}", RentLog);
+        toastService.ShowSuccess("Your RentLog was succesfully edited, refresh to see result", "RentLog Edited!");
+        BlazoredModal.Close(ModalResult.Ok<RentLog>(RentLog));
+    }
+}

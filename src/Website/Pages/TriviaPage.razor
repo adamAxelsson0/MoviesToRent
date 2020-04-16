@@ -1,3 +1,56 @@
 @page "/Trivias"
 @inject  HttpClient Http;
 @inject IModalService Modal
+
+<head>
+  <base href="~/" />
+  </head>
+  <input @bind-value="searchText" @bind-value:event="oninput" placeholder="Search for Movie Title"/>
+@if (_trivias != null)
+{   
+    <div class="container">
+  <div class="card-columns">
+    @foreach (var trivia in _trivias.Where(x => x.Movie.Title.ToLower().Contains(searchText.ToLower())).ToList())
+    {
+     <div class="card" style="width: 18rem;">
+    <div class="card-body">
+
+    <h5 class="card-title">@trivia.Movie.Title</h5>
+    <p class="card-reviewer">#@trivia.FilmStudioId. @trivia.FilmStudio.Name</p>
+    <p class="card-text">@trivia.TriviaText</p>
+    </div>
+        <div class="card-footer">
+            <button @onclick="@(() => Edit(trivia))" class="btn btn-info">Edit</button>
+            <button @onclick="@(() => Delete(trivia))" class="btn btn-danger">Delete</button>
+        </div>
+    </div>
+    }
+    </div>
+    </div>
+}
+else{
+    <p>Couldnt be loaded</p>
+}
+
+
+@code{
+    private List<Trivia>  _trivias;
+    private string searchText = "";
+    protected override async Task OnInitializedAsync()
+    {
+        _trivias = await Http.GetJsonAsync<List<Trivia>>("http://localhost:4000/api/trivias");
+    }
+    void Delete(Trivia trivia)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("Trivia", trivia);
+
+        Modal.Show<DeleteTrivia>("Do you wish to delete this review?", parameters);
+    }
+    void Edit(Trivia trivia)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("RevTriviaiew", trivia);
+        Modal.Show<EditTrivia>("Do you wish to delete this review?", parameters);
+    }
+}

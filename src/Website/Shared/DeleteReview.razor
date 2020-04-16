@@ -1,0 +1,21 @@
+@inject IModalService ModalService
+@inject HttpClient Http
+@inject IToastService toastService
+
+    <button @onclick="Delete" class="btn btn-danger">Delete</button>
+    <button @onclick="BlazoredModal.Cancel" class="btn btn-secondary">Cancel</button>
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Review Review { get; set; }
+
+    //Movie Movie {get;set;}
+
+    private async Task Delete()
+    {
+        await Http.DeleteAsync($"http://localhost:4000/api/reviews/{Review.Id}");
+        toastService.ShowWarning("Your Review was succesfully deleted, refresh too see result", "Review Deleted!");
+        BlazoredModal.Close(ModalResult.Ok<Review>(Review));
+    }
+
+}
