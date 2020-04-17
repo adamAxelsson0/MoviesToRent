@@ -46,7 +46,21 @@ namespace WebAPI.Controllers
 
             return rentLog;
         }
+        [HttpGet("Label/{id}")]
+        [Produces("application/xml")]
+        public async Task<ActionResult<RentalLabel>> GetRentlogLabel(int id)
+        {
+            var rentLog = await _context.RentLogs.Where(x => x.Id == id).Include(x => x.Movie).Include(x => x.FilmStudio).FirstOrDefaultAsync();
 
+            if (rentLog == null)
+            {
+                return NotFound();
+            }
+
+            var label = new RentalLabel{Title = rentLog.Movie.Title, ExpireDate = rentLog.ExpireDate, Location = rentLog.FilmStudio.Location};
+
+            return label;
+        }
 
         // PUT: api/RentLog/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
