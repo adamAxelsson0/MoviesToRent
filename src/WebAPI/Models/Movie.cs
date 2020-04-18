@@ -14,15 +14,13 @@ namespace WebAPI.Models
             if (Quantity > 0) { return true; }
             return false;
         }
-        public Movie Rental()
+        public void Rental()
         {
             this.Quantity -= 1;
-            return this;
         }
-        public Movie RentalReturn()
+        public void RentalReturn()
         {
             this.Quantity += 1;
-            return this;
         }
     }
 }

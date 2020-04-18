@@ -107,7 +107,7 @@ namespace WebAPI.Controllers
                 //need to check since our get wont always include a Movie(if it was posted by postman for example)
                 //need to double check with rentlogs movieid prop to get movie
                 var movie = await _context.Movies.FindAsync(rentLog.MovieId);
-                movie = movie.Rental();
+                movie.Rental();
 
                 _context.RentLogs.Add(rentLog);
                 _context.Entry(movie).State = EntityState.Modified;
@@ -140,7 +140,7 @@ namespace WebAPI.Controllers
                 movie = rentLog.Movie;
             }
 
-            movie = movie.RentalReturn();
+            movie.RentalReturn();
             _context.RentLogs.Remove(rentLog);
             _context.Entry(movie).State = EntityState.Modified;
             await _context.SaveChangesAsync();
